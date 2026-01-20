@@ -1,0 +1,12 @@
+<h1>Nouvelle entreprise</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <h3>Entreprise</h3>
+  {{ form.as_p }}
+
+  <h3>Contact référent</h3>
+  {{ formset.management_form }} {% for f in formset %} {{ f.as_p }} {% endfor %}
+
+  <button type="submit">Enregistrer</button>
+</form>

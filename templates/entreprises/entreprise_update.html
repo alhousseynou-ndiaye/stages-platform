@@ -1,0 +1,8 @@
+<h1>Modifier : {{ entreprise.raison_sociale }}</h1>
+
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Enregistrer</button>
+</form>
+
+<p><a href="{% url 'entreprise_detail' entreprise.pk %}">Annuler</a></p>

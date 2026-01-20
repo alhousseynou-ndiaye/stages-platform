@@ -1,0 +1,29 @@
+<h1>{{ entreprise.raison_sociale }} ({{ entreprise.code }})</h1>
+
+{% if request.user.role == "ADMIN" or request.user.role == "RESP_PEDAGO" %}
+<p>
+  <a href="{% url 'entreprise_update' entreprise.pk %}">
+    ✏️ Modifier l’entreprise
+  </a>
+</p>
+{% endif %}
+
+<ul>
+  <li>Adresse: {{ entreprise.adresse }}</li>
+  <li>Ville: {{ entreprise.ville }}</li>
+  <li>Téléphone: {{ entreprise.telephone }}</li>
+  <li>Email: {{ entreprise.email }}</li>
+  <li>Secteur: {{ entreprise.secteur_activite }}</li>
+  <li>Statut: {{ entreprise.statut_partenariat }}</li>
+</ul>
+
+<h3>Contacts</h3>
+<ul>
+  {% for c in entreprise.contacts.all %}
+  <li>{{ c.prenom }} {{ c.nom }} - {{ c.fonction }} - {{ c.email }}</li>
+  {% empty %}
+  <li>Aucun contact</li>
+  {% endfor %}
+</ul>
+
+<p><a href="{% url 'entreprise_list' %}">Retour</a></p>

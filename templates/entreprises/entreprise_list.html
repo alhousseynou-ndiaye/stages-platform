@@ -1,0 +1,93 @@
+﻿<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Entreprises</title>
+  </head>
+
+  <body>
+    <h1>Entreprises</h1>
+
+    <p>
+      <a href="{% url 'entreprise_create' %}">+ Ajouter une entreprise</a>
+    </p>
+
+    <form method="get">
+      <input type="text" name="q" placeholder="Nom / secteur / ville / code" value="{{ q }}" />
+      <input type="text" name="secteur" placeholder="Secteur" value="{{ secteur }}" />
+      <input type="text" name="ville" placeholder="Ville" value="{{ ville }}" />
+
+      <select name="statut">
+        <option value="" {% if not statut %}selected{% endif %}>-- Statut partenariat --</option>
+        <option value="ACTIF" {% if statut == "ACTIF" %}selected{% endif %}>Actif</option>
+        <option value="INACTIF" {% if statut == "INACTIF" %}selected{% endif %}>Inactif</option>
+      </select>
+
+      <button type="submit">Rechercher</button>
+    </form>
+
+    <hr />
+
+    <table border="1" cellpadding="6" width="100%">
+      <thead>
+        <tr>
+          <th>
+            <a href="?q={{ q }}&secteur={{ secteur }}&ville={{ ville }}&statut={{ statut }}&sort=code&dir={% if sort == 'code' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              Code
+            </a>
+          </th>
+          <th>
+            <a href="?q={{ q }}&secteur={{ secteur }}&ville={{ ville }}&statut={{ statut }}&sort=raison_sociale&dir={% if sort == 'raison_sociale' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              Raison sociale
+            </a>
+          </th>
+          <th>
+            <a href="?q={{ q }}&secteur={{ secteur }}&ville={{ ville }}&statut={{ statut }}&sort=ville&dir={% if sort == 'ville' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              Ville
+            </a>
+          </th>
+          <th>
+            <a href="?q={{ q }}&secteur={{ secteur }}&ville={{ ville }}&statut={{ statut }}&sort=secteur_activite&dir={% if sort == 'secteur_activite' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              Secteur
+            </a>
+          </th>
+          <th>
+            <a href="?q={{ q }}&secteur={{ secteur }}&ville={{ ville }}&statut={{ statut }}&sort=statut_partenariat&dir={% if sort == 'statut_partenariat' and dir == 'asc' %}desc{% else %}asc{% endif %}">
+              Statut
+            </a>
+          </th>
+          <th>Détails</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for e in page_obj %}
+        <tr>
+          <td>{{ e.code }}</td>
+          <td>{{ e.raison_sociale }}</td>
+          <td>{{ e.ville }}</td>
+          <td>{{ e.secteur_activite }}</td>
+          <td>{{ e.statut_partenariat }}</td>
+          <td><a href="{% url 'entreprise_detail' e.pk %}">Voir détails</a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6">Aucun résultat.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div style="margin-top: 10px">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}&secteur={{ secteur }}&ville={{ ville }}&statut={{ statut }}&sort={{ sort }}&dir={{ dir }}">← Précédent</a>
+      {% endif %}
+
+      <span style="margin: 0 10px">
+        Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+      </span>
+
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&q={{ q }}&secteur={{ secteur }}&ville={{ ville }}&statut={{ statut }}&sort={{ sort }}&dir={{ dir }}">Suivant →</a>
+      {% endif %}
+    </div>
+  </body>
+</html>

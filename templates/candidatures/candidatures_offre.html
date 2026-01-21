@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Candidatures</title>
+  </head>
+  <body>
+    <h1>Candidatures reçues</h1>
+    <p><b>Offre:</b> {{ offre.titre }}</p>
+
+    <table border="1" cellpadding="6" width="100%">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Étudiant</th>
+          <th>Email</th>
+          <th>Statut</th>
+          <th>CV</th>
+          <th>LM</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in candidatures %}
+        <tr>
+          <td>{{ c.date_candidature }}</td>
+          <td>{{ c.etudiant.username }}</td>
+          <td>{{ c.etudiant.email }}</td>
+          <td>{{ c.statut }}</td>
+          <td><a href="{{ c.cv.url }}">CV</a></td>
+          <td><a href="{{ c.lm.url }}">LM</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">Aucune candidature.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p><a href="{% url 'offre_detail' offre.pk %}">Retour à l’offre</a></p>
+  </body>
+</html>

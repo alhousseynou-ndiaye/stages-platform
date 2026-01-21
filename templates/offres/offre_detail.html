@@ -13,12 +13,14 @@
     <p><b>Date début :</b> {{ offre.date_debut }}</p>
     <p><b>Rémunéré :</b> {{ offre.remunere }}</p>
     <p>
-      <b>Rémunération :</b> {% if offre.remuneration %}{{ offre.remuneration
-      }}{% else %}-{% endif %}
+      <b>Rémunération :</b>
+      {% if offre.remuneration %} {{ offre.remuneration }} {% else %} - {% endif
+      %}
     </p>
     <p>
-      <b>Filière :</b> {% if offre.filiere_cible %}{{ offre.filiere_cible }}{%
-      else %}-{% endif %}
+      <b>Filière :</b>
+      {% if offre.filiere_cible %} {{ offre.filiere_cible }} {% else %} - {%
+      endif %}
     </p>
     <p><b>Statut :</b> {{ offre.statut }}</p>
 
@@ -35,19 +37,37 @@
     <ul>
       {% for pj in offre.pieces_jointes.all %}
       <li>
-        <a href="{{ pj.fichier.url }}"
-          >{{ pj.label|default:pj.fichier.name }}</a
-        >
+        <a href="{{ pj.fichier.url }}">
+          {{ pj.label|default:pj.fichier.name }}
+        </a>
       </li>
       {% empty %}
       <li>Aucune pièce jointe.</li>
       {% endfor %}
     </ul>
 
-    {% if offre.statut != "ARCHIVEE" %}
-    <p><a href="{% url 'offre_archive' offre.pk %}">Archiver l’offre</a></p>
-    {% endif %}
+    <hr />
 
-    <p><a href="{% url 'offre_list' %}">Retour à la liste</a></p>
+    {# Actions selon le rôle #} {% if request.user.role == "ETUDIANT" and
+    offre.statut == "PUBLIEE" %}
+    <p><a href="{% url 'postuler' offre.pk %}">✅ Postuler</a></p>
+    <p><a href="{% url 'mes_candidatures' %}">📄 Voir mes candidatures</a></p>
+    {% endif %} {% if request.user.role == "ADMIN" or request.user.role ==
+    "RESP_PEDAGO" %}
+    <p>
+      <a href="{% url 'candidatures_offre' offre.pk %}">
+        📥 Voir les candidatures reçues
+      </a>
+    </p>
+
+    {% if offre.statut != "ARCHIVEE" %}
+    <p>
+      <a href="{% url 'offre_archive' offre.pk %}"> 🗄️ Archiver l’offre </a>
+    </p>
+    {% endif %} {% endif %}
+
+    <hr />
+
+    <p><a href="{% url 'offre_list' %}">⬅ Retour à la liste</a></p>
   </body>
 </html>

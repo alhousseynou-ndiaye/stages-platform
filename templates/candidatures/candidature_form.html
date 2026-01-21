@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Postuler</title>
+  </head>
+  <body>
+    <h1>Postuler à : {{ offre.titre }}</h1>
+    <p><b>Entreprise:</b> {{ offre.entreprise.raison_sociale }}</p>
+
+    {% if messages %}
+    <ul>
+      {% for m in messages %}
+      <li>{{ m }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %} {{ form.as_p }}
+      <button type="submit">Envoyer ma candidature</button>
+    </form>
+
+    <p><a href="{% url 'offre_detail' offre.pk %}">Retour à l’offre</a></p>
+  </body>
+</html>

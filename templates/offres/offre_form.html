@@ -1,0 +1,28 @@
+﻿<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Nouvelle offre</title>
+</head>
+<body>
+  <h1>Publier une offre</h1>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <h3>Informations offre</h3>
+    {{ form.as_p }}
+
+    <h3>Pièces jointes</h3>
+    {{ formset.management_form }}
+
+    {% for f in formset %}
+      {{ f.as_p }}
+    {% endfor %}
+
+    <button type="submit">Publier</button>
+  </form>
+
+  <p><a href="{% url "offre_list" %}">Retour</a></p>
+</body>
+</html>

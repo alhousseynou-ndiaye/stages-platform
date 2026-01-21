@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Détails offre</title>
+  </head>
+  <body>
+    <h1>{{ offre.titre }}</h1>
+
+    <p><b>Entreprise :</b> {{ offre.entreprise.raison_sociale }}</p>
+    <p><b>Lieu :</b> {{ offre.lieu }}</p>
+    <p><b>Durée :</b> {{ offre.duree_mois }} mois</p>
+    <p><b>Date début :</b> {{ offre.date_debut }}</p>
+    <p><b>Rémunéré :</b> {{ offre.remunere }}</p>
+    <p>
+      <b>Rémunération :</b> {% if offre.remuneration %}{{ offre.remuneration
+      }}{% else %}-{% endif %}
+    </p>
+    <p>
+      <b>Filière :</b> {% if offre.filiere_cible %}{{ offre.filiere_cible }}{%
+      else %}-{% endif %}
+    </p>
+    <p><b>Statut :</b> {{ offre.statut }}</p>
+
+    <h3>Description</h3>
+    <p>{{ offre.description }}</p>
+
+    <h3>Missions</h3>
+    <p>{{ offre.missions }}</p>
+
+    <h3>Profil recherché</h3>
+    <p>{{ offre.profil_recherche }}</p>
+
+    <h3>Pièces jointes</h3>
+    <ul>
+      {% for pj in offre.pieces_jointes.all %}
+      <li>
+        <a href="{{ pj.fichier.url }}"
+          >{{ pj.label|default:pj.fichier.name }}</a
+        >
+      </li>
+      {% empty %}
+      <li>Aucune pièce jointe.</li>
+      {% endfor %}
+    </ul>
+
+    {% if offre.statut != "ARCHIVEE" %}
+    <p><a href="{% url 'offre_archive' offre.pk %}">Archiver l’offre</a></p>
+    {% endif %}
+
+    <p><a href="{% url 'offre_list' %}">Retour à la liste</a></p>
+  </body>
+</html>

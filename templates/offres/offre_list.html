@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Offres</title>
+  </head>
+  <body>
+    <h1>Offres de stage</h1>
+    <p><a href="{% url 'offre_create' %}">+ Publier une offre</a></p>
+
+    <form method="get">
+      <input name="q" placeholder="Mots-clés" value="{{ q }}" />
+      <input name="lieu" placeholder="Lieu" value="{{ lieu }}" />
+      <input
+        name="duree_min"
+        placeholder="Durée min (mois)"
+        value="{{ duree_min }}"
+      />
+      <input
+        name="duree_max"
+        placeholder="Durée max (mois)"
+        value="{{ duree_max }}"
+      />
+
+      <label>
+        <input
+          type="checkbox"
+          name="remunere"
+          value="1"
+          {%
+          if
+          remunere=""
+          ="1"
+          %}checked{%
+          endif
+          %}
+        />
+        Rémunéré
+      </label>
+
+      <select name="statut">
+        <option value="" {% if not statut %}selected{% endif %}>
+          -- Statut --
+        </option>
+        <option
+          value="PUBLIEE"
+          {%
+          if
+          statut=""
+          ="PUBLIEE"
+          %}selected{%
+          endif
+          %}
+        >
+          Publiée
+        </option>
+        <option
+          value="ARCHIVEE"
+          {%
+          if
+          statut=""
+          ="ARCHIVEE"
+          %}selected{%
+          endif
+          %}
+        >
+          Archivée
+        </option>
+      </select>
+
+      <button type="submit">Rechercher</button>
+    </form>
+
+    <hr />
+
+    <table border="1" cellpadding="6" width="100%">
+      <thead>
+        <tr>
+          <th>Titre</th>
+          <th>Entreprise</th>
+          <th>Lieu</th>
+          <th>Durée</th>
+          <th>Rémunération</th>
+          <th>Statut</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for o in page_obj %}
+        <tr>
+          <td>{{ o.titre }}</td>
+          <td>{{ o.entreprise.raison_sociale }}</td>
+          <td>{{ o.lieu }}</td>
+          <td>{{ o.duree_mois }} mois</td>
+          <td>
+            {% if o.remuneration %}{{ o.remuneration }}{% else %}-{% endif %}
+          </td>
+          <td>{{ o.statut }}</td>
+          <td><a href="{% url 'offre_detail' o.pk %}">Voir</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">Aucune offre.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div style="margin-top: 10px">
+      {% if page_obj.has_previous %}
+      <a
+        href="?page={{ page_obj.previous_page_number }}&q={{ q }}&lieu={{ lieu }}&duree_min={{ duree_min }}&duree_max={{ duree_max }}&remunere={{ remunere }}&statut={{ statut }}"
+        >← Précédent</a
+      >
+      {% endif %}
+      <span style="margin: 0 10px"
+        >Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span
+      >
+      {% if page_obj.has_next %}
+      <a
+        href="?page={{ page_obj.next_page_number }}&q={{ q }}&lieu={{ lieu }}&duree_min={{ duree_min }}&duree_max={{ duree_max }}&remunere={{ remunere }}&statut={{ statut }}"
+        >Suivant →</a
+      >
+      {% endif %}
+    </div>
+  </body>
+</html>

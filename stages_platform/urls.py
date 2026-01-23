@@ -17,6 +17,8 @@ urlpatterns = [
     path("offres/", include("offres.urls")),
     path("candidatures/", include("candidatures.urls")),
     path("conventions/", include("conventions.urls")),
+    path("conventions/", include("conventions.urls")),
+
 ]
 
 if settings.DEBUG:

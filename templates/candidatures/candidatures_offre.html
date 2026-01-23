@@ -24,10 +24,12 @@
           <th>Email</th>
           <th>Statut</th>
           <th>Changer statut</th>
+          <th>Convention</th>
           <th>CV</th>
           <th>LM</th>
         </tr>
       </thead>
+
       <tbody>
         {% for c in candidatures %}
         <tr>
@@ -62,12 +64,21 @@
             </form>
           </td>
 
+          <td>
+            {% if c.statut != "REFUSEE" %}
+            <a href="{% url 'generate_convention' c.pk %}">Générer PDF</a>
+            {% if c.convention and c.convention.document %}
+            <br />
+            <a href="{{ c.convention.document.url }}">Télécharger</a>
+            {% endif %} {% else %} - {% endif %}
+          </td>
+
           <td><a href="{{ c.cv.url }}">CV</a></td>
           <td><a href="{{ c.lm.url }}">LM</a></td>
         </tr>
         {% empty %}
         <tr>
-          <td colspan="7">Aucune candidature.</td>
+          <td colspan="8">Aucune candidature.</td>
         </tr>
         {% endfor %}
       </tbody>

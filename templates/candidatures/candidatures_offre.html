@@ -8,6 +8,14 @@
     <h1>Candidatures reçues</h1>
     <p><b>Offre:</b> {{ offre.titre }}</p>
 
+    {% if messages %}
+    <ul>
+      {% for m in messages %}
+      <li>{{ m }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
     <table border="1" cellpadding="6" width="100%">
       <thead>
         <tr>
@@ -15,6 +23,7 @@
           <th>Étudiant</th>
           <th>Email</th>
           <th>Statut</th>
+          <th>Changer statut</th>
           <th>CV</th>
           <th>LM</th>
         </tr>
@@ -26,12 +35,39 @@
           <td>{{ c.etudiant.username }}</td>
           <td>{{ c.etudiant.email }}</td>
           <td>{{ c.statut }}</td>
+
+          <td>
+            <form
+              method="post"
+              action="{% url 'candidature_update_statut' c.pk %}"
+            >
+              {% csrf_token %}
+              <select name="statut">
+                {% for value,label in c.Statut.choices %}
+                <option
+                  value="{{ value }}"
+                  {%
+                  if
+                  c.statut=""
+                  ="value"
+                  %}selected{%
+                  endif
+                  %}
+                >
+                  {{ label }}
+                </option>
+                {% endfor %}
+              </select>
+              <button type="submit">OK</button>
+            </form>
+          </td>
+
           <td><a href="{{ c.cv.url }}">CV</a></td>
           <td><a href="{{ c.lm.url }}">LM</a></td>
         </tr>
         {% empty %}
         <tr>
-          <td colspan="6">Aucune candidature.</td>
+          <td colspan="7">Aucune candidature.</td>
         </tr>
         {% endfor %}
       </tbody>

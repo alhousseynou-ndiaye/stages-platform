@@ -7,6 +7,10 @@ from offres.models import OffreStage
 from .forms import CandidatureCreateForm
 from .models import Candidature
 
+from django.utils import timezone
+from core.models import Log
+
+
 
 def is_etudiant(u):
     return u.is_authenticated and getattr(u, "actif", True) and u.role == User.Role.ETUDIANT
@@ -70,3 +74,35 @@ def candidatures_offre(request, offre_id):
         .order_by("-date_candidature")
     )
     return render(request, "candidatures/candidatures_offre.html", {"offre": offre, "candidatures": candidatures})
+
+
+@login_required
+def candidature_update_statut(request, pk):
+    u = request.user
+    if u.role not in [User.Role.ADMIN, User.Role.RESP_PEDAGO]:
+        return redirect("mes_candidatures")
+
+    cand = get_object_or_404(Candidature.objects.select_related("offre"), pk=pk)
+
+    if request.method == "POST":
+        new_statut = request.POST.get("statut", "").strip()
+        allowed = {choice[0] for choice in Candidature.Statut.choices}
+        if new_statut not in allowed:
+            messages.error(request, "Statut invalide.")
+            return redirect("candidatures_offre", offre_id=cand.offre_id)
+
+        cand.statut = new_statut
+        cand.date_reponse = timezone.now()
+        cand.save(update_fields=["statut", "date_reponse"])
+
+        # Log (notification simulée)
+        Log.objects.create(
+            user=u,
+            action="CHANGEMENT_STATUT_CANDIDATURE",
+            details=f"Candidature #{cand.id} -> {new_statut} (Offre #{cand.offre_id})",
+        )
+
+        messages.success(request, f"Statut mis à jour : {new_statut}")
+        return redirect("candidatures_offre", offre_id=cand.offre_id)
+
+    return redirect("candidatures_offre", offre_id=cand.offre_id)

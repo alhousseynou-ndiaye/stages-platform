@@ -31,3 +31,5 @@ Thumbs.db
 desktop.ini
 
 # Migrations cache (on garde les migrations, donc pas besoin d'ignorer migrations/)
+
+*.exe

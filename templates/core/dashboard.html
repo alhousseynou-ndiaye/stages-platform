@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>Tableau de bord - Stages</h1>
+
+    <h2>Indicateurs clés</h2>
+    <ul>
+      <li><b>Nombre d’offres :</b> {{ nb_offres }}</li>
+      <li><b>Nombre de candidatures :</b> {{ nb_candidatures }}</li>
+      <li><b>Taux d’acceptation :</b> {{ taux_acceptation }} %</li>
+      <li><b>Durée moyenne (mois) :</b> {{ duree_moy }}</li>
+      <li><b>Rémunération moyenne :</b> {{ remun_moy }}</li>
+    </ul>
+
+    <hr />
+
+    <h2>Offres par filière</h2>
+    <canvas id="chartFiliere" width="800" height="300"></canvas>
+
+    <h2>Candidatures par statut</h2>
+    <canvas id="chartStatut" width="800" height="300"></canvas>
+
+    <h2>Entreprises les plus actives</h2>
+    <canvas id="chartEntreprises" width="800" height="300"></canvas>
+
+    <h3>Top entreprises (table)</h3>
+    <table border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>Entreprise</th>
+          <th>Nb offres</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in top_entreprises %}
+        <tr>
+          <td>{{ e.entreprise__raison_sociale }}</td>
+          <td>{{ e.n }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="2">Aucune donnée.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <script>
+      const labelsFiliere = JSON.parse("{{ labels_filiere|escapejs }}");
+      const dataFiliere = JSON.parse("{{ data_filiere|escapejs }}");
+
+      const labelsStatut = JSON.parse("{{ labels_statut|escapejs }}");
+      const dataStatut = JSON.parse("{{ data_statut|escapejs }}");
+
+      const labelsEnt = JSON.parse("{{ labels_ent|escapejs }}");
+      const dataEnt = JSON.parse("{{ data_ent|escapejs }}");
+
+      new Chart(document.getElementById("chartFiliere"), {
+        type: "bar",
+        data: {
+          labels: labelsFiliere,
+          datasets: [{ label: "Offres", data: dataFiliere }],
+        },
+      });
+
+      new Chart(document.getElementById("chartStatut"), {
+        type: "pie",
+        data: {
+          labels: labelsStatut,
+          datasets: [{ label: "Candidatures", data: dataStatut }],
+        },
+      });
+
+      new Chart(document.getElementById("chartEntreprises"), {
+        type: "bar",
+        data: {
+          labels: labelsEnt,
+          datasets: [{ label: "Nb offres", data: dataEnt }],
+        },
+      });
+    </script>
+  </body>
+</html>

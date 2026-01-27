@@ -132,27 +132,6 @@ Plusieurs candidatures avec statuts variés
 
 Ces données peuvent être ajoutées via l’interface d’administration.
 
-📑 Rapport
 
-Le rapport PDF associé au projet décrit :
 
-L’architecture technique
-
-Le modèle de données
-
-Les choix de conception
-
-Les fonctionnalités implémentées
-
-Les perspectives d’évolution
-
-👨‍💻 Auteur
-
-Alhousseynou Ndiaye
-M1 Informatique – Data Science
-ESILV
-
-📄 Licence
-
-Projet académique – Usage pédagogique uniquement.
 

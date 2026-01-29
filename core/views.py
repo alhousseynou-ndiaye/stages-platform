@@ -2,12 +2,21 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count, Avg, Q
 from django.shortcuts import render
+from django.shortcuts import render, redirect
+
 
 from accounts.models import User
 from offres.models import OffreStage, Filiere
 from candidatures.models import Candidature
 from entreprises.models import Entreprise
+from accounts.models import User
 
+def home(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
+    if request.user.role in [User.Role.ADMIN, User.Role.RESP_PEDAGO]:
+        return redirect("dashboard")
+    return redirect("offre_list")
 
 @login_required
 def dashboard(request):

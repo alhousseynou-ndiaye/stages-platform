@@ -3,71 +3,145 @@
   <head>
     <meta charset="utf-8" />
     <title>Détails offre</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 900px;
+        margin: auto;
+        padding: 20px;
+      }
+
+      h1 {
+        color: #2c3e50;
+      }
+
+      .section {
+        margin-bottom: 20px;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 8px 14px;
+        background: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-right: 10px;
+      }
+
+      .btn:hover {
+        background: #2980b9;
+      }
+
+      .btn-danger {
+        background: #e74c3c;
+      }
+
+      .btn-danger:hover {
+        background: #c0392b;
+      }
+
+      .info {
+        background: #f8f9fa;
+        padding: 10px;
+        border-left: 4px solid #3498db;
+        margin-bottom: 15px;
+      }
+    </style>
   </head>
+
   <body>
     <h1>{{ offre.titre }}</h1>
 
-    <p><b>Entreprise :</b> {{ offre.entreprise.raison_sociale }}</p>
-    <p><b>Lieu :</b> {{ offre.lieu }}</p>
-    <p><b>Durée :</b> {{ offre.duree_mois }} mois</p>
-    <p><b>Date début :</b> {{ offre.date_debut }}</p>
-    <p><b>Rémunéré :</b> {{ offre.remunere }}</p>
-    <p>
-      <b>Rémunération :</b>
-      {% if offre.remuneration %} {{ offre.remuneration }} {% else %} - {% endif
-      %}
-    </p>
-    <p>
-      <b>Filière :</b>
-      {% if offre.filiere_cible %} {{ offre.filiere_cible }} {% else %} - {%
-      endif %}
-    </p>
-    <p><b>Statut :</b> {{ offre.statut }}</p>
+    <div class="info">
+      <p><b>Entreprise :</b> {{ offre.entreprise.raison_sociale }}</p>
+      <p><b>Lieu :</b> {{ offre.lieu }}</p>
+      <p><b>Durée :</b> {{ offre.duree_mois }} mois</p>
+      <p><b>Date début :</b> {{ offre.date_debut }}</p>
+      <p><b>Statut :</b> {{ offre.statut }}</p>
+    </div>
 
-    <h3>Description</h3>
-    <p>{{ offre.description }}</p>
+    <div class="section">
+      <p>
+        <b>Rémunération :</b>
+        {% if offre.remuneration %} {{ offre.remuneration }} € {% else %} - {%
+        endif %}
+      </p>
 
-    <h3>Missions</h3>
-    <p>{{ offre.missions }}</p>
+      <p>
+        <b>Filière :</b>
+        {% if offre.filiere_cible %} {{ offre.filiere_cible }} {% else %} - {%
+        endif %}
+      </p>
+    </div>
 
-    <h3>Profil recherché</h3>
-    <p>{{ offre.profil_recherche }}</p>
+    <div class="section">
+      <h3>Description</h3>
+      <p>{{ offre.description|linebreaks }}</p>
+    </div>
 
-    <h3>Pièces jointes</h3>
-    <ul>
-      {% for pj in offre.pieces_jointes.all %}
-      <li>
-        <a href="{{ pj.fichier.url }}">
-          {{ pj.label|default:pj.fichier.name }}
-        </a>
-      </li>
-      {% empty %}
-      <li>Aucune pièce jointe.</li>
-      {% endfor %}
-    </ul>
+    <div class="section">
+      <h3>Missions</h3>
+      <p>{{ offre.missions|linebreaks }}</p>
+    </div>
+
+    <div class="section">
+      <h3>Profil recherché</h3>
+      <p>{{ offre.profil_recherche|linebreaks }}</p>
+    </div>
+
+    <div class="section">
+      <h3>Pièces jointes</h3>
+
+      <ul>
+        {% for pj in offre.pieces_jointes.all %}
+        <li>
+          <a href="{{ pj.fichier.url }}">
+            {{ pj.label|default:pj.fichier.name }}
+          </a>
+        </li>
+        {% empty %}
+        <li>Aucune pièce jointe.</li>
+        {% endfor %}
+      </ul>
+    </div>
 
     <hr />
 
-    {# Actions selon le rôle #} {% if request.user.role == "ETUDIANT" and
-    offre.statut == "PUBLIEE" %}
-    <p><a href="{% url 'postuler' offre.pk %}">✅ Postuler</a></p>
-    <p><a href="{% url 'mes_candidatures' %}">📄 Voir mes candidatures</a></p>
-    {% endif %} {% if request.user.role == "ADMIN" or request.user.role ==
-    "RESP_PEDAGO" %}
-    <p>
-      <a href="{% url 'candidatures_offre' offre.pk %}">
-        📥 Voir les candidatures reçues
+    <!-- ================== ACTIONS ================== -->
+
+    <div class="section">
+      <!-- Étudiant -->
+      {% if request.user.role|lower == "etudiant" and offre.statut|lower ==
+      "publiee" %}
+
+      <a href="{% url 'postuler' offre.pk %}" class="btn"> 📩 Postuler </a>
+
+      <a href="{% url 'mes_candidatures' %}" class="btn">
+        📄 Mes candidatures
       </a>
-    </p>
 
-    {% if offre.statut != "ARCHIVEE" %}
-    <p>
-      <a href="{% url 'offre_archive' offre.pk %}"> 🗄️ Archiver l’offre </a>
-    </p>
-    {% endif %} {% endif %}
+      {% endif %}
+
+      <!-- Admin / Responsable -->
+      {% if request.user.role|lower == "admin" or request.user.role|lower ==
+      "resp_pedago" %}
+
+      <a href="{% url 'candidatures_offre' offre.pk %}" class="btn">
+        📥 Voir candidatures
+      </a>
+
+      {% if offre.statut|lower != "archivee" %}
+      <a href="{% url 'offre_archive' offre.pk %}" class="btn btn-danger">
+        🗄️ Archiver
+      </a>
+      {% endif %} {% endif %}
+    </div>
 
     <hr />
 
-    <p><a href="{% url 'offre_list' %}">⬅ Retour à la liste</a></p>
+    <p>
+      <a href="{% url 'offre_list' %}">⬅ Retour à la liste</a>
+    </p>
   </body>
 </html>
